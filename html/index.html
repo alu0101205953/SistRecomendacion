@@ -16,6 +16,23 @@
     <br>
     <p>Introduzca el fichero (en formato .txt) con la matriz de utilidad:</p>
     <input type="file" id="file" name="file" accept=".txt" />
+    <p>Seleccione la métrica:</p>
+    <select name="metrica" id="metrica">
+      <option value="pearson">Correlación de Pearson</option>
+      <option value="coseno">Distancia Coseno</option>
+      <option value="euclidea">Distancia Euclídea</option>
+    </select>
+    <p>Introduzca el número de vecinos considerado:</p>
+    <input type="number" id="vecinos" name="vecinos" value="1" min="1" />
+    <p>Seleccione el tipo de predicción:</p>
+    <select name="prediccion" id="prediccion">
+      <option value="simple">Predicción Simple</option>
+      <option value="diferencia">Diferencia con la Media</option>
+    </select>
+    <br>
+    <br>
+    <br>
+    <button type="button" id="calcular">Calcular</button> 
     <output id="print"></output>
     <br>
     <br>
