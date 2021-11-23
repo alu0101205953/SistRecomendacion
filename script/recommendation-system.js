@@ -41,7 +41,8 @@ async function handleFiles(e) {
 }
 
 function calculate(matrix, metrics, neighbors, prediction) {
-  calculateSimilarity(matrix, metrics);
+  let sim = calculateSimilarity(matrix, metrics);
+  calculatePrediction(sim, matrix, neighbors, prediction);
 }
 
 function calculateSimilarity(matrix, metrics) {
@@ -54,10 +55,12 @@ function calculateSimilarity(matrix, metrics) {
           aux.push(0);
         } else {
           switch (metrics) {
-            case "":
-              
+            case "coseno":
+              aux.push(cosine(matrix[i], matrix[j]));
               break;
-          
+            case "euclidea":
+              aux.push(euclidean(matrix[i], matrix[j]));
+              break;
             default:
               aux.push(pearson(matrix[i], matrix[j]));
               break;
@@ -96,6 +99,47 @@ function pearson(u, v) {
   return acc1 / (acc2 * acc3);
 }
 
+function cosine(u, v) {
+  let s = [];
+  for (let i = 0; i < u.length; i++) {
+    if ((u[i] !== "-") && (v[i] !== "-")) {
+      s.push(i);
+    }
+  }
+  
+  let acc1 = 0;
+  let acc2 = 0;
+  let acc3 = 0;
+
+  for (let i = 0; i < s.length; i++) {
+    acc1 += u[s[i]] * v[s[i]];
+    acc2 += Math.pow(u[s[i]], 2);
+    acc3 += Math.pow(v[s[i]], 2);
+  }
+
+  acc2 = Math.sqrt(acc2);
+  acc3 = Math.sqrt(acc3);
+
+  return acc1 / (acc2 * acc3);
+}
+
+function euclidean(u, v) { //Cuanto mayor es la distancia menor es la similitud
+  let s = [];
+  for (let i = 0; i < u.length; i++) {
+    if ((u[i] !== "-") && (v[i] !== "-")) {
+      s.push(i);
+    }
+  }
+
+  let acc = 0;
+
+  for (let i = 0; i < s.length; i++) {
+    acc += Math.pow((u[s[i]] - v[s[i]]), 2);
+  }
+
+  return Math.sqrt(acc);
+}
+
 function average(u) {
   let acc = 0;
   let len = 0;
@@ -106,4 +150,19 @@ function average(u) {
     }
   }
   return acc / len;
+}
+
+function calculatePrediction(sim, matrix, neighbors, prediction) {
+  let sort = [];
+  let aux = [];
+  for (let i = 0; i < sim.length; i++) {
+    aux.push(sim[i][1].sort((a, b) => a - b));
+    sort.push(i, aux);
+  }
+  
+  
+  // if (neighbors < matrix.length) {
+  //  sim = sim.slice(0, neighbors + 1);
+  //}
+  console.log(sort);
 }
