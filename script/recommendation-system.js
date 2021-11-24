@@ -42,7 +42,7 @@ async function handleFiles(e) {
 
 function calculate(matrix, metrics, neighbors, prediction) {
   let sim = calculateSimilarity(matrix, metrics);
-  calculatePrediction(sim, matrix, neighbors, prediction);
+  calculatePrediction(sim, matrix, neighbors, prediction, metrics);
 }
 
 function calculateSimilarity(matrix, metrics) {
@@ -51,18 +51,16 @@ function calculateSimilarity(matrix, metrics) {
     if (matrix[i].indexOf("-") !== -1) {
       let aux = [];
       for (let j = 0; j < matrix.length; j++) {
-        if (i == j) {
-          aux.push(0);
-        } else {
+        if (i !== j) {
           switch (metrics) {
             case "coseno":
-              aux.push(cosine(matrix[i], matrix[j]));
+              aux.push([j, cosine(matrix[i], matrix[j])]);
               break;
             case "euclidea":
-              aux.push(euclidean(matrix[i], matrix[j]));
+              aux.push([j, euclidean(matrix[i], matrix[j])]);
               break;
             default:
-              aux.push(pearson(matrix[i], matrix[j]));
+              aux.push([j, pearson(matrix[i], matrix[j])]);
               break;
           }
         }
@@ -152,17 +150,77 @@ function average(u) {
   return acc / len;
 }
 
-function calculatePrediction(sim, matrix, neighbors, prediction) {
-  let sort = [];
-  let aux = [];
-  for (let i = 0; i < sim.length; i++) {
-    aux.push(sim[i][1].sort((a, b) => a - b));
-    sort.push(i, aux);
+function calculatePrediction(sim, matrix, neighbors, prediction, metrics) {
+  let tupleCounter = 0;
+
+  if (prediction == "diferencia") {
+    for (let i = 0; i < matrix.length; i++) {
+      if (matrix[i].indexOf("-") !== -1) {
+        let similarNeighbors = sortArray(neighbors, sim[tupleCounter][1], metrics);
+        for (let j = 0; j < matrix.length; j++) {
+          if (matrix[i][j] == "-") {
+            let acc1 = 0;
+            let acc2 = 0;
+            for (let k = 0; k < similarNeighbors.length; k++) {
+              acc1 += similarNeighbors[k][1] * (matrix[similarNeighbors[k][0]][j] - average(matrix[similarNeighbors[k][0]]));
+              acc2 += Math.abs(similarNeighbors[k][1]);
+            }
+            matrix[i][j] = String(Math.round(average(matrix[i]) + (acc1 / acc2)));
+          }
+        }
+        tupleCounter++;
+      }
+    }
+  } else {
+    for (let i = 0; i < matrix.length; i++) {
+      if (matrix[i].indexOf("-") !== -1) {
+        let similarNeighbors = sortArray(neighbors, sim[tupleCounter][1], metrics);
+        for (let j = 0; j < matrix.length; j++) {
+          if (matrix[i][j] == "-") {
+            let acc1 = 0;
+            let acc2 = 0;
+            for (let k = 0; k < similarNeighbors.length; k++) {
+              acc1 += similarNeighbors[k][1] * matrix[similarNeighbors[k][0]][j];
+              acc2 += Math.abs(similarNeighbors[k][1]);
+            }
+            matrix[i][j] = String(Math.round(acc1 / acc2));
+          }
+        }
+        tupleCounter++;
+      }
+    }
   }
   
-  
-  // if (neighbors < matrix.length) {
-  //  sim = sim.slice(0, neighbors + 1);
-  //}
-  console.log(sort);
+  console.log(matrix);
+}
+
+function sortArray(k, arr, metrics) {
+  let neighbors = [...arr];
+  let result = [];
+
+  if (metrics == "euclidea") {
+    for (let i = 0; i < k; i++) {
+      let min = 0;
+      for (let j = 0; j < neighbors.length; j++) {
+        if (neighbors[min][1] >= neighbors[j][1]) {
+          min = j;
+        }
+      }
+      result.push(neighbors[min]);
+      neighbors.splice(min, 1);
+    }
+  } else {
+    for (let i = 0; i < k; i++) {
+      let max = 0;
+      for (let j = 0; j < neighbors.length; j++) {
+        if (neighbors[max][1] <= neighbors[j][1]) {
+          max = j;
+        }
+      }
+      result.push(neighbors[max]);
+      neighbors.splice(max, 1);
+    }
+  }
+
+  return result;
 }
