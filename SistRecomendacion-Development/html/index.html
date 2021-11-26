@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sistemas de Recomendación</title>  
+    <style type="text/css">
+      #alert {
+        color: rgb(212, 138, 255);
+        margin: 1em 0;
+      }
+    </style> 
+    <meta charset="utf-8">
+    </head>
+  
+  <body>
+    <h1 style="color:rgb(108, 0, 197);">Sistemas de Recomendación</h1>
+    <br>
+    <p>Introduzca el fichero (en formato .txt) con la matriz de utilidad:</p>
+    <input type="file" id="file" name="file" accept=".txt" />
+    <p>Seleccione la métrica:</p>
+    <select name="metrica" id="metrica">
+      <option value="pearson">Correlación de Pearson</option>
+      <option value="coseno">Distancia Coseno</option>
+      <option value="euclidea">Distancia Euclídea</option>
+    </select>
+    <p>Introduzca el número de vecinos considerado:</p>
+    <input type="number" id="vecinos" name="vecinos" value="3" min="3" />
+    <p>Seleccione el tipo de predicción:</p>
+    <select name="prediccion" id="prediccion">
+      <option value="simple">Predicción Simple</option>
+      <option value="diferencia">Diferencia con la Media</option>
+    </select>
+    <br>
+    <br>
+    <br>
+    <button type="button" id="calcular">Calcular</button> 
+    <output id="print"></output>
+    <br>
+    <br>
+    <p style="color:rgb(108, 0, 197);">Matriz inicial:</p>
+    <p id="output"></p>
+
+    <p style="color:rgb(108, 0, 197);">Similitud:</p>
+    <p id="output2"></p>
+
+    <p style="color:rgb(108, 0, 197);">Predicción:</p>
+    <p id="output3"></p>
+
+    <div id="startpoint"></div>
+    <script type="text/javascript" src="../script/jquery-3.6.0.min.js"></script>    
+    <script type="text/javascript" src="../script/recommendation-system.js"></script>
+  </body>
+</html>
