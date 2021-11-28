@@ -185,7 +185,7 @@ function average(u) {
 
 function calculatePrediction(sim, matrix, neighbors, prediction, metrics) {
   let tupleCounter = 0;
-
+  document.getElementById("output4").innerHTML = "";
   if (prediction == "diferencia") {
     for (let i = 0; i < matrix.length; i++) {
       if (matrix[i].indexOf("-") !== -1) {
@@ -211,6 +211,15 @@ function calculatePrediction(sim, matrix, neighbors, prediction, metrics) {
           }
         }
         tupleCounter++;
+        document.getElementById("output4").innerHTML += "<p>Usuario " + String(i) + ": ";
+        for (let j = 0; j < similarNeighbors.length; j++) {
+          if (j !== similarNeighbors.length - 1) {
+            document.getElementById("output4").innerHTML += String(similarNeighbors[j][0]) + ", ";
+          } else {
+            document.getElementById("output4").innerHTML += String(similarNeighbors[j][0]);
+          }     
+        }
+        document.getElementById("output4").innerHTML += "</p>"; 
       }
     }
   } else {
@@ -239,6 +248,15 @@ function calculatePrediction(sim, matrix, neighbors, prediction, metrics) {
           }
         }
         tupleCounter++;
+        document.getElementById("output4").innerHTML += "<p>Usuario " + String(i) + ": ";
+        for (let j = 0; j < similarNeighbors.length; j++) {
+          if (j !== similarNeighbors.length - 1) {
+            document.getElementById("output4").innerHTML += String(similarNeighbors[j][0]) + ", ";
+          } else {
+            document.getElementById("output4").innerHTML += String(similarNeighbors[j][0]);
+          }     
+        }
+        document.getElementById("output4").innerHTML += "</p>"; 
       }
     }
   }
