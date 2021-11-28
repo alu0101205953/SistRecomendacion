@@ -23,7 +23,7 @@
       <option value="euclidea">Distancia Euclídea</option>
     </select>
     <p>Introduzca el número de vecinos considerado:</p>
-    <input type="number" id="vecinos" name="vecinos" value="1" min="1" />
+    <input type="number" id="vecinos" name="vecinos" value="3" min="3" />
     <p>Seleccione el tipo de predicción:</p>
     <select name="prediccion" id="prediccion">
       <option value="simple">Predicción Simple</option>
@@ -36,7 +36,15 @@
     <output id="print"></output>
     <br>
     <br>
+    <p style="color:rgb(108, 0, 197);">Matriz inicial:</p>
     <p id="output"></p>
+
+    <p style="color:rgb(108, 0, 197);">Similitud:</p>
+    <div id="output2"></div>
+    
+    <p style="color:rgb(108, 0, 197);">Predicción:</p>
+    <p id="output3"></p>
+
     <div id="startpoint"></div>
     <script type="text/javascript" src="../script/jquery-3.6.0.min.js"></script>    
     <script type="text/javascript" src="../script/recommendation-system.js"></script>

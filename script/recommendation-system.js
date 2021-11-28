@@ -22,6 +22,15 @@ async function handleFiles(e) {
           dummy.push(e.split(" "));
         }
       });
+
+      for (let i = 0; i < dummy.length; i++) { //Eliminar los espacios en blanco al final de cada fila de la matriz
+        for (let j = 0; j < dummy[i].length; j++) {
+          if (dummy[i][j] == "") {
+            dummy[i].pop();
+          }
+        }
+      }
+    
       txtArr = [...dummy];
     }
 
@@ -50,7 +59,7 @@ function calculateSimilarity(matrix, metrics) {
   for (let i = 0; i < matrix.length; i++) {
     if (matrix[i].indexOf("-") !== -1) {
       let aux = [];
-      for (let j = 0; j < matrix.length; j++) {
+      for (let j = 0; j < matrix.length; j++) { 
         if (i !== j) {
           switch (metrics) {
             case "coseno":
@@ -69,6 +78,30 @@ function calculateSimilarity(matrix, metrics) {
       vect.push([i, aux]);
     }
   }
+  let str = "<table>";
+  str += "<tr><th>/</th>";
+  
+  for (let j = 0; j < matrix.length; j++) {
+    str += "<th> Usuario " + String(j) + "</th>";
+  }
+
+  for (let i = 0; i < vect.length; i++) {
+    str += "<tr>";
+    str += "<th> Usuario " + vect[i][0] + "</th>";
+    
+    let k = 0;
+    for (let j = 0; j < matrix.length; j++) {
+      if (vect[i][0] !== j) {
+        str += "<th>" + vect[i][1][k][1] + "</th>";
+        k++;
+      } else {
+        str += "<th>-</th>";
+      }
+    }
+    str += "</tr>";
+  }
+  str += "</table>";
+  document.getElementById("output2").innerHTML = str; 
   console.log(vect);
   return vect;
 }
@@ -157,15 +190,24 @@ function calculatePrediction(sim, matrix, neighbors, prediction, metrics) {
     for (let i = 0; i < matrix.length; i++) {
       if (matrix[i].indexOf("-") !== -1) {
         let similarNeighbors = sortArray(neighbors, sim[tupleCounter][1], metrics);
-        for (let j = 0; j < matrix.length; j++) {
+        for (let j = 0; j < matrix[i].length; j++) {
           if (matrix[i][j] == "-") {
             let acc1 = 0;
             let acc2 = 0;
             for (let k = 0; k < similarNeighbors.length; k++) {
-              acc1 += similarNeighbors[k][1] * (matrix[similarNeighbors[k][0]][j] - average(matrix[similarNeighbors[k][0]]));
-              acc2 += Math.abs(similarNeighbors[k][1]);
+              if (!isNaN(matrix[similarNeighbors[k][0]][j])) {
+                acc1 += similarNeighbors[k][1] * (matrix[similarNeighbors[k][0]][j] - average(matrix[similarNeighbors[k][0]]));
+                acc2 += Math.abs(similarNeighbors[k][1]);
+              }
             }
-            matrix[i][j] = String(Math.round(average(matrix[i]) + (acc1 / acc2)));
+            if (acc2 !== 0) {
+              matrix[i][j] = String(Math.round(acc1 / acc2));
+              if (Math.round(acc1 / acc2) < 0) {
+                matrix[i][j] = String(0);
+              } else if (Math.round(acc1 / acc2) > 5) {
+                matrix[i][j] = String(5); 
+              }
+            }   
           }
         }
         tupleCounter++;
@@ -175,15 +217,25 @@ function calculatePrediction(sim, matrix, neighbors, prediction, metrics) {
     for (let i = 0; i < matrix.length; i++) {
       if (matrix[i].indexOf("-") !== -1) {
         let similarNeighbors = sortArray(neighbors, sim[tupleCounter][1], metrics);
-        for (let j = 0; j < matrix.length; j++) {
+        for (let j = 0; j < matrix[i].length; j++) {
           if (matrix[i][j] == "-") {
             let acc1 = 0;
             let acc2 = 0;
             for (let k = 0; k < similarNeighbors.length; k++) {
-              acc1 += similarNeighbors[k][1] * matrix[similarNeighbors[k][0]][j];
-              acc2 += Math.abs(similarNeighbors[k][1]);
+              if (!isNaN(matrix[similarNeighbors[k][0]][j])) {
+                acc1 += similarNeighbors[k][1] * matrix[similarNeighbors[k][0]][j];
+                acc2 += Math.abs(similarNeighbors[k][1]); 
+              }               
             }
-            matrix[i][j] = String(Math.round(acc1 / acc2));
+            if (acc2 !== 0) {
+              matrix[i][j] = String(Math.round(acc1 / acc2));
+              
+              if (Math.round(acc1 / acc2) < 0) {
+                matrix[i][j] = String(0);
+              } else if (Math.round(acc1 / acc2) > 5) {
+                matrix[i][j] = String(5); 
+              } 
+            }           
           }
         }
         tupleCounter++;
@@ -191,7 +243,7 @@ function calculatePrediction(sim, matrix, neighbors, prediction, metrics) {
     }
   }
   
-  console.log(matrix);
+  document.getElementById("output3").innerHTML = matrix.join("<br>");
 }
 
 function sortArray(k, arr, metrics) {
